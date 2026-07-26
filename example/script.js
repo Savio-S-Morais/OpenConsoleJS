@@ -1,4 +1,5 @@
-// Sem erro
+// EN: No error.
+// PT-BR: Sem erro.
 OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
@@ -13,7 +14,8 @@ OpenConsole.evaluate(() => {
 
 console.log('==============');
 
-// Erros de execução
+// EN: Runtime errors.
+// PT-BR: Erros de execução.
 OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
@@ -28,7 +30,8 @@ OpenConsole.evaluate(() => {
 
 console.log('==============');
 
-// Erros de tipo
+// EN: Type errors.
+// PT-BR: Erros de tipo.
 OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
@@ -43,7 +46,8 @@ OpenConsole.evaluate(() => {
 
 console.log('==============');
 
-// Erros de sintaxe
+// EN: Syntax errors.
+// PT-BR: Erros de sintaxe.
 OpenConsole.evaluate(`
     let numero1 = 10;
     let numero2 = 5;

@@ -94,13 +94,6 @@
         content.innerHTML = ""
     };
 
-    function createAPI() {
-        window.debug = {
-            log,
-            clear
-        };
-    };
-
     function interceptConsole() {
         const originalLog = console.log;
         console.log = (...args) => {
@@ -129,6 +122,34 @@
                 </span>
             `);
         });
+    };
+    
+    function run(source) {
+        try {
+            if (typeof source === "function") {
+                return source();
+            }
+
+            if (typeof source === "string") {
+                return eval(source);
+            }
+        } catch (error) {
+            debug.log(`
+                <span style="color:red">
+                    Uncaught ${error.name}: ${error.message}
+                </span>
+            `);
+
+            log(error.stack ?? "Sem stack trace");
+        }
+    };
+
+    function createAPI() {
+        window.debug = {
+            log,
+            clear,
+            run
+        };
     };
 
     function init() {

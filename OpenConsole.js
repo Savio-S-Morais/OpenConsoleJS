@@ -85,6 +85,10 @@
             .log-container p {
                 margin: 4px 0;
             }
+
+            .log-error {
+                color: #ff5555;
+            }
         `;
         document.head.appendChild(styleElement);
     };
@@ -159,7 +163,7 @@
     function captureRuntimeErrors() {
         window.addEventListener('error', (event) => {
             appendLog(`
-                <span style="color:red">
+                <span class="log-error">
                     Uncaught ${event.error?.name || "Error"}:
                     ${event.message}
                     <br>
@@ -171,7 +175,7 @@
 
         window.addEventListener("unhandledrejection", (event) => {
             appendLog(`
-                <span style="color:red">
+                <span class="log-error">
                     Uncaught (in promise): ${event.reason}
                 </span>
             `);
@@ -205,7 +209,7 @@
             }
         } catch (error) {
             appendLog(`
-                <span style="color:red">
+                <span class="log-error">
                     Uncaught ${error.name}: ${error.message}
                 </span>
             `);

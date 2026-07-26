@@ -1,15 +1,15 @@
 // EN: No error.
 // PT-BR: Sem erro.
 OpenConsole.evaluate(() => {
-    let numero1 = 10;
-    let numero2 = 5;
+    let number1 = 10;
+    let number2 = 5;
 
-    function somar(a, b) {
+    function sum(a, b) {
         return a + b;
     };
 
-    let resultado = somar(numero1, numero2);
-    console.log("Resultado:", resultado);
+    let result = sum(number1, number2);
+    console.log("Result:", result);
 });
 
 console.log('==============');
@@ -17,15 +17,15 @@ console.log('==============');
 // EN: Runtime errors.
 // PT-BR: Erros de execução.
 OpenConsole.evaluate(() => {
-    let numero1 = 10;
-    let numero2 = 5;
+    let number1 = 10;
+    let number2 = 5;
 
-    function somar(a, b) {
+    function sum(a, b) {
         return a + b;
     }
 
-    let resultado = somar(numero1, numero2);
-    console.log("Resultado:", usuario.nome);
+    let result = sum(number1, number2);
+    console.log("Result:", user.name);
 });
 
 console.log('==============');
@@ -33,15 +33,15 @@ console.log('==============');
 // EN: Type errors.
 // PT-BR: Erros de tipo.
 OpenConsole.evaluate(() => {
-    let numero1 = 10;
-    let numero2 = 5;
+    let number1 = 10;
+    let number2 = 5;
 
-    function somar(a, b) {
+    function sum(a, b) {
         return a + b;
     }
 
-    let resultado = somar(numero1, numero2);
-    console.log("Resultado:",  resultado.toUpperCase());
+    let result = sum(number1, number2);
+    console.log("Result:",  result.toUpperCase());
 });
 
 console.log('==============');
@@ -49,13 +49,13 @@ console.log('==============');
 // EN: Syntax errors.
 // PT-BR: Erros de sintaxe.
 OpenConsole.evaluate(`
-    let numero1 = 10;
-    let numero2 = 5;
+    let number1 = 10;
+    let number2 = 5;
 
-    function somar(a, b) {
+    function sum(a, b) {
         return a + b;
     }
 
-    let resultado = somar(numero1, numero2
-    console.log("Resultado:", resultado);
+    let result = sum(number1, number2
+    console.log("Result:", result);
 `);

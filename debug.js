@@ -1,11 +1,11 @@
-// Projeto baseado em IIFE (Immediately Invoked Function Expression)
+// Project based on an IIFE (Immediately Invoked Function Expression)
 (() => {
     let panel;
     let button;
     let content;
 
-    function createPanel() {
-        // Evitar criar painel duas vezes
+    function createDebugPanel() {
+        // Prevent duplicate panel creation
         if(document.getElementById('debug-panel')) return;
 
         panel = document.createElement('div');
@@ -22,8 +22,8 @@
         content = panel.querySelector('.debug-content');
     }
 
-    function createStyle() {
-        // Evitar criar CSS duas vezes
+    function injectDebugStyles() {
+        // Prevent duplicate style injection
         if(document.getElementById('debug-style')) return;
         const style = document.createElement('style');
         style.id = 'debug-style';
@@ -74,7 +74,7 @@
         document.head.appendChild(style);
     };
 
-    function registerEvents() {
+    function openDebugPanel() {
         button.addEventListener('click', () => {
             panel.classList.toggle('closed');
             button.textContent = panel.classList.contains('closed')
@@ -83,28 +83,28 @@
         });
     };
 
-    function log(msg) {
+    function appendLogEntry(msg) {
         const p = document.createElement('p');
         p.innerHTML += msg;
         content.appendChild(p);
         content.scrollTop = content.scrollHeight;
     };
 
-    function clear() {
+    function clearLogs() {
         content.innerHTML = ""
     };
 
-    function interceptConsole() {
+    function captureConsoleLogs() {
         const originalLog = console.log;
         console.log = (...args) => {
-            debug.log(args.join(" "));
+            debug.appendLogEntry(args.join(" "));
             originalLog(...args);
         };
     };
 
-    function registerErrorHandlers() {
+    function captureRuntimeErrors() {
         window.addEventListener('error', (event) => {
-            debug.log(`
+            debug.appendLogEntry(`
                 <span style="color:red">
                     Uncaught ${event.error?.name || "Error"}:
                     ${event.message}
@@ -112,11 +112,11 @@
                     ${event.filename}:${event.lineno}:${event.colno}
                 </span>
             `);
-            log(event.error?.stack ?? "Sem stack trace");
+            appendLogEntry(event.error?.stack ?? "Sem stack trace");
         });
 
         window.addEventListener("unhandledrejection", (event) => {
-            debug.log(`
+            debug.appendLogEntry(`
                 <span style="color:red">
                     Uncaught (in promise): ${event.reason}
                 </span>
@@ -134,20 +134,20 @@
                 return eval(source);
             }
         } catch (error) {
-            debug.log(`
+            debug.appendLogEntry(`
                 <span style="color:red">
                     Uncaught ${error.name}: ${error.message}
                 </span>
             `);
 
-            log(error.stack ?? "Sem stack trace");
+            appendLogEntry(error.stack ?? "Sem stack trace");
         }
     };
 
     function createAPI() {
         window.debug = {
-            log,
-            clear,
+            appendLogEntry,
+            clearLogs,
             run
         };
     };
@@ -155,12 +155,12 @@
     function init() {
         if(document.getElementById('debug-panel')) return;
 
-        createStyle();
-        createPanel();
-        registerEvents();
+        createDebugPanel();
+        injectDebugStyles();
+        openDebugPanel();
         createAPI();
-        interceptConsole();
-        registerErrorHandlers();
+        captureConsoleLogs();
+        captureRuntimeErrors();
     };
 
     init();

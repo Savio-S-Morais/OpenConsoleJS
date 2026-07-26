@@ -1,4 +1,4 @@
-// Projeto baseado em IIFE (Immediately Invoked Function Expression
+// Projeto baseado em IIFE (Immediately Invoked Function Expression)
 (() => {
     function init() {
         // Evitar criar painel duas vezes
@@ -7,7 +7,7 @@
         // ======== HTML ========
             const panel = document.createElement('div');
             panel.id = 'debug-panel';
-            panel.classList = 'closed';
+            panel.classList.add('closed');
 
             panel.innerHTML = `
                 <button id="toggle-debug">▼ Debug</button>
@@ -83,16 +83,23 @@
             const p = document.createElement('p');
             p.innerHTML += msg;
             content.appendChild(p);
-            content.scrollTop = content.scroolHeight;
+            content.scrollTop = content.scrollHeight;
         };
 
         function clear() {
             content.innerHTML = ""
-        }
+        };
 
         window.debug = {
             log,
             clear
+        };
+
+        // Intercept the console
+        const originalLog = console.log;
+        console.log = (...args) => {
+            debug.log(args.join(" "));
+            originalLog(...args);
         };
     };
 

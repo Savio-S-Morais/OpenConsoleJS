@@ -1,5 +1,5 @@
 // Sem erro
-debug.run(() => {
+OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
 
@@ -14,7 +14,7 @@ debug.run(() => {
 console.log('==============');
 
 // Erros de execução
-debug.run(() => {
+OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
 
@@ -29,7 +29,7 @@ debug.run(() => {
 console.log('==============');
 
 // Erros de tipo
-debug.run(() => {
+OpenConsole.evaluate(() => {
     let numero1 = 10;
     let numero2 = 5;
 
@@ -44,7 +44,7 @@ debug.run(() => {
 console.log('==============');
 
 // Erros de sintaxe
-debug.run(`
+OpenConsole.evaluate(`
     let numero1 = 10;
     let numero2 = 5;
 

@@ -89,6 +89,25 @@
             .log-error {
                 color: #ff5555;
             }
+
+            .info {
+                color: #60a5fa;
+                background-color: #072541;
+            }
+
+            .warn {
+                padding-left: 10px;
+                color: #e3b505;
+                background-color: #332b00;
+                border-left: 3px solid #e3b505;
+            }
+
+            .error {
+                padding-left: 10px;
+                color; #ff8080;
+                background-color: #290000;
+                border-left: 3px solid #ff4d4f;
+            }
         `;
         document.head.appendChild(styleElement);
     };
@@ -111,8 +130,9 @@
      * PT-BR:
      * Adiciona uma nova mensagem na área de saída do console.
      */
-    function appendLog(message) {
+    function appendLog(message, type) {
         const logEntry = document.createElement('p');
+        logEntry.classList.add(type);
         logEntry.innerHTML += message;
         logContainer.appendChild(logEntry);
         logContainer.scrollTop = logContainer.scrollHeight;
@@ -144,11 +164,27 @@
      */
     function interceptConsoleLogs() {
         const originalLog = console.log;
+        const originalLogInfo = console.info;
+        const originalLogWarn = console.warn;
+        const originalLogError = console.error;
+
         console.log = (...args) => {
             // EN: Keeps the original behavior by forwarding messages to the browser console.
             // PT-BR: Mantém o comportamento original enviando as mensagens para o console do navegador.
-            appendLog(args.join(" "));
+            appendLog(args.join(" "), "log");
             originalLog(...args);
+        };
+        console.info = (...args) => {
+            appendLog(args.join(""),"info");
+            originalLogInfo(...args);
+        };
+        console.warn = (...args) => {
+            appendLog(args.join(""),"warn");
+            originalLogWarn(...args);
+        };
+        console.error = (...args) => {
+            appendLog(args.join(""), "error");
+            originalLogError(...args);
         };
     };
 

@@ -90,9 +90,25 @@
                 color: #ff5555;
             }
 
-            .info {
-                color: #60a5fa;
-                background-color: #072541;
+            .info::before {
+                content: "i";
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background-color: transparent;
+                width: 12px;
+                height: 12px;
+                border: 1px solid white;
+                border-radius: 50%;
+
+                font-family: 'Segoe UI', Tahoma, sans-sefif;
+                font-size: 10px;
+                font-weight: bold;
+
+                margin-right: 5px;
+                margin-top: 2px;
+                flex-shrink: 0;
             }
 
             .warn {
@@ -163,31 +179,24 @@
      * original do console do navegador.
      */
     function interceptConsoleLogs() {
-        const originalLog = console.log;
-        const originalLogInfo = console.info;
-        const originalLogWarn = console.warn;
-        const originalLogError = console.error;
+        const consoleTypes = [
+            "log",
+            "info",
+            "warn",
+            "error"
+        ];
 
-        console.log = (...args) => {
-            // EN: Keeps the original behavior by forwarding messages to the browser console.
-            // PT-BR: Mantém o comportamento original enviando as mensagens para o console do navegador.
-            appendLog(args.join(" "), "log");
-            originalLog(...args);
-        };
-        console.info = (...args) => {
-            appendLog(args.join(""),"info");
-            originalLogInfo(...args);
-        };
-        console.warn = (...args) => {
-            appendLog(args.join(""),"warn");
-            originalLogWarn(...args);
-        };
-        console.error = (...args) => {
-            appendLog(args.join(""), "error");
-            originalLogError(...args);
-        };
+        consoleTypes.forEach((type) => {
+            const originalConsole = console[type];
+
+            console[type] = (...args) => {
+                // EN: Keeps the original behavior by forwarding messages to the browser console.
+                // PT-BR: Mantém o comportamento original enviando as mensagens para o console do navegador.
+                appendLog(args.join(" "), type);
+                originalConsole(...args);
+            }
+        })
     };
-
     
     /**
      * EN:

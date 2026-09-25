@@ -291,9 +291,9 @@ que representa a API pública da biblioteca.
 
 Entre as próximas funcionalidades previstas estão:
 
-- [ ] `console.info()`
-- [ ] `console.warn()`
-- [ ] `console.error()`
+- [x] ~~`console.info()`~~
+- [x] ~~`console.warn()`~~
+- [x] ~~`console.error()`~~
 - [ ] Timestamp nos logs
 - [ ] Categorias
 - [ ] Filtros

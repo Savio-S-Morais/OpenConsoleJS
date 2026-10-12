@@ -17,6 +17,8 @@
     let openConsolePanel;
     let toggleButton;
     let logContainer;
+    let commandForm;
+    let commandInput;
 
     function createPanel() {
         // EN: Prevents duplicate panel creation.
@@ -31,10 +33,24 @@
             <div id="open-console-resize-handle" aria-hidden="true"></div>
             <button id="toggle-open-console">▼ Console</button>
             <div class="log-container"></div>
+
+            <form id="console-command-form">
+                <span class="command-prompt">&gt;</span>
+                <input
+                    type="text"
+                    id="console-command-input"
+                    placeholder="Digite o comando"
+                    autocomplete="off"
+                    spellcheck="false"
+                    arial-label="Comando JavaScript"
+                >
+            </form>
         `;
         document.body.appendChild(openConsolePanel);
         toggleButton = openConsolePanel.querySelector('#toggle-open-console');
         logContainer = openConsolePanel.querySelector('.log-container');
+        commandForm = openConsolePanel.querySelector('#console-command-form');
+        commandInput = openConsolePanel.querySelector('#console-command-input');
     }
 
     function injectStyles() {
@@ -46,6 +62,8 @@
         styleElement.textContent = `
             #open-console-panel {
                 position: fixed;
+                display: flex;
+                flex-direction: column;
                 bottom: 0;
                 left: 0;
                 width: 100%;
@@ -79,9 +97,11 @@
             }
 
             .log-container {
-                height: calc(100% - 40px);
+                flex: 1;
+                min-height: 0;
                 overflow-y: auto;
                 padding: 10px;
+                box-sizing: border-box;
             }
 
             .log-container p {
@@ -98,6 +118,37 @@
                 touch-action: none;
                 user-select: none;
                 z-index: 2;    
+            }
+
+            #console-command-form {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-height: 38px;
+                padding: 6px 10px;
+                background: #252526;
+                border-top: 1px solid #444;
+            }
+
+            .command-prompt {
+                color: #7ec699;
+                font-weight: bold;
+            }
+
+            #console-command-input {
+                flex: 1;
+                min-width: 0;
+                padding: 6px 0;
+                background: transparent;
+                color: #fff;
+                border: none;
+                outline: none;
+                font-family: inherit;
+                font-size: inherit;
+            }
+
+            #console-command-input::placeholder {
+                color: #888;
             }
 
             .log-error {
@@ -152,6 +203,40 @@
                 : "▲ Console";
         });
     };
+
+    function bindCommandEvents() {
+        commandForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const command = commandInput.value.trim();
+
+            if(!command) {
+                return;
+            }
+
+            appendCommand(command);
+
+            const execution = evaluate(command);
+
+            if(execution.success) {
+                appendResult(execution.result);
+            } else {
+                const error = execution.error;
+
+                appendLog(
+                    `Uncaught ${error.name}: ${error.message}`,
+                    'log-error'
+                );
+
+                if (error.stack) {
+                    appendLog(error.stack, 'log-error');
+                }
+            }
+
+            commandInput.value = '';
+            commandInput.focus();
+        });
+    }
 
     /**
      * EN:
@@ -240,6 +325,46 @@
         logContainer.appendChild(logEntry);
         logContainer.scrollTop = logContainer.scrollHeight;
     };
+
+    function appendCommand(command) {
+        const commandEntry = document.createElement('p');
+        const prompt = document.createElement('span');
+        const commandText = document.createElement('span');
+
+        prompt.textContent = '> ';
+        prompt.style.color = '#7ec699';
+
+        commandText.textContent = command;
+
+        commandEntry.appendChild(prompt);
+        commandEntry.appendChild(commandText);
+
+        logContainer.appendChild(commandEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    function appendResult(result) {
+    const resultEntry = document.createElement('p');
+
+        resultEntry.style.paddingLeft = '16px';
+        resultEntry.style.whiteSpace = 'pre-wrap';
+
+        if (result === undefined) {
+            resultEntry.textContent = 'undefined';
+        } else if (typeof result === 'string') {
+            resultEntry.textContent = result;
+        } else {
+            try {
+                resultEntry.textContent = JSON.stringify(result, null, 2)
+                    ?? String(result);
+            } catch {
+                resultEntry.textContent = String(result);
+            }
+        }
+
+        logContainer.appendChild(resultEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
 
     
     /**
@@ -332,13 +457,20 @@
      */
     function evaluate(input) {
         try {
-            if (typeof input === "function") {
-                return input();
+            let result;
+
+            if(typeof input === "function") {
+                result = input();
+            } else if(typeof input === "string") {
+                result = eval(input);
+            } else {
+                throw new TypeError("Entrada inválida para execução");
             }
 
-            if (typeof input === "string") {
-                return eval(input);
-            }
+            return {
+                success: true,
+                result: result
+            };
         } catch (error) {
             appendLog(`
                 <span class="log-error">
@@ -347,6 +479,11 @@
             `);
 
             appendLog(error.stack ?? "Sem stack trace");
+
+            return {
+                success: false,
+                error: error
+            };
         }
     };
 
@@ -382,6 +519,7 @@
         injectStyles();
         bindPanelEvents();
         setupResize();
+        bindCommandEvents();
         exposeAPI();
         interceptConsoleLogs();
         captureRuntimeErrors();

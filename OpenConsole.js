@@ -239,7 +239,7 @@
 
             appendCommand(command);
 
-            const execution = evaluate(command);
+            const execution = executeCode(command);
 
             if(execution.success) {
                 appendResult(execution.result);
@@ -248,7 +248,7 @@
 
                 appendLog(
                     `Uncaught ${error.name}: ${error.message}`,
-                    'log-error'
+                    'log-message'
                 );
 
                 if (error.stack) {
@@ -489,23 +489,18 @@
         });
     };
     
-    
     /**
      * EN:
-     * Executes JavaScript code provided as a function or string.
+     * Executes JavaScript code provided as a function or string
+     * and returns an object indicating whether execution succeeded,
+     * along with the result or the captured error.
      *
      * PT-BR:
-     * Executa código JavaScript recebido como função ou texto.
-     *
-     * Note:
-     * This function uses eval intentionally to simulate a browser console experience.
-     * Using eval can execute arbitrary code.
-     *
-     * Observação:
-     * Esta função utiliza eval intencionalmente para simular a experiência de um console do navegador.
-     * O uso de eval pode executar códigos arbitrários.
+     * Executa código JavaScript recebido como função ou texto
+     * e retorna um objeto indicando se a execução foi bem-sucedida,
+     * juntamente com o resultado ou o erro capturado.
      */
-    function evaluate(input) {
+    function executeCode(input) {
         try {
             let result;
 
@@ -526,13 +521,13 @@
                 result: result
             };
         } catch (error) {
-            appendLog(`
-                <span class="log-error">
-                    Uncaught ${error.name}: ${error.message}
-                </span>
-            `);
+            // appendLog(`
+            //     <span class="log-error">
+            //         Uncaught ${error.name}: ${error.message}
+            //     </span>
+            // `);
 
-            appendLog(error.stack ?? "Sem stack trace");
+            // appendLog(error.stack ?? "Sem stack trace");
 
             // EN: Returns the captured error so the caller can handle its display.
             // PT-BR: Retorna o erro capturado para que a função chamadora possa tratar sua exibição.
@@ -541,6 +536,43 @@
                 error: error
             };
         }
+    }
+
+    
+    /**
+     * EN:
+     * Executes JavaScript code provided as a function or string.
+     *
+     * PT-BR:
+     * Executa código JavaScript recebido como função ou texto.
+     *
+     * Note:
+     * This function uses eval intentionally to simulate a browser console experience.
+     * Using eval can execute arbitrary code.
+     *
+     * Observação:
+     * Esta função utiliza eval intencionalmente para simular a experiência de um console do navegador.
+     * O uso de eval pode executar códigos arbitrários.
+     */
+    function evaluate(input) {
+        const execution = executeCode(input);
+
+        if(!execution.success) {
+            const error = execution.error;
+
+            // EN: Displays the execution error and its stack trace when available.
+            // PT-BR: Exibe o erro de execução e seu rastreamento de pilha quando disponível.
+            appendLog(
+                `Uncaught ${error.name}: ${error.message}`,
+                'log-message'
+            );
+
+            if(error.stack) {
+                appendLog(error.stack, 'log-error');
+            }
+        }
+
+        return execution;
     };
 
     /**

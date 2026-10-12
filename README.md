@@ -307,7 +307,7 @@ Entre as próximas funcionalidades previstas estão:
 - [ ] Monitoramento de eventos
 - [ ] Temporizadores (`time/timeEnd`)
 - [ ] Contadores (`count`)
-- [ ] Console interativo
+- [x] ~~Console interativo~~
 - [ ] Sistema de plugins
 - [ ] Temas
 - [ ] Responsividade aprimorada

@@ -204,16 +204,32 @@
         });
     };
 
+    /**
+     * EN:
+     * Binds the command form submission event to execute JavaScript
+     * commands and display their results or errors in the console.
+     *
+     * PT-BR:
+     * Vincula o evento de envio do formulário de comandos à execução
+     * de comandos JavaScript e à exibição de seus resultados ou erros
+     * no console.
+     */
     function bindCommandEvents() {
         commandForm.addEventListener('submit', (event) => {
+            // EN: Prevents the form submission from reloading the page.
+            // PT-BR: Impede que o envio do formulário recarregue a página.
             event.preventDefault();
 
             const command = commandInput.value.trim();
 
+            // EN: Ignores empty commands.
+            // PT-BR: Ignora comandos vazios.
             if(!command) {
                 return;
             }
 
+            // EN: Clears the console when a supported clear command is entered.
+            // PT-BR: Limpa o console quando um dos comandos de limpeza reconhecidos é informado.
             if(command === 'clear' || command === 'clearLogs()' || command === 'clearLogs') {
                 clearLogs();
                 commandInput.value = '';
@@ -240,6 +256,8 @@
                 }
             }
 
+            // EN: Clears the input and restores focus for the next command.
+            // PT-BR: Limpa o campo de entrada e restaura o foco para o próximo comando.
             commandInput.value = '';
             commandInput.focus();
         });
@@ -333,6 +351,15 @@
         logContainer.scrollTop = logContainer.scrollHeight;
     };
 
+    /**
+     * EN:
+     * Appends an executed command to the console output,
+     * displaying it with a prompt to distinguish it from other messages.
+     *
+     * PT-BR:
+     * Adiciona um comando executado à saída do console,
+     * exibindo-o com um indicador para diferenciá-lo das demais mensagens.
+     */
     function appendCommand(command) {
         const commandEntry = document.createElement('p');
         const prompt = document.createElement('span');
@@ -348,8 +375,18 @@
 
         logContainer.appendChild(commandEntry);
         logContainer.scrollTop = logContainer.scrollHeight;
-    }
+    };
 
+    /**
+     * EN:
+     * Appends the result of an executed command to the console output,
+     * formatting values for readability and handling serialization errors.
+     *
+     * PT-BR:
+     * Adiciona o resultado de um comando executado à saída do console,
+     * formatando os valores para facilitar a leitura e tratando erros
+     * de serialização.
+     */
     function appendResult(result) {
     const resultEntry = document.createElement('p');
 
@@ -357,14 +394,20 @@
         resultEntry.style.whiteSpace = 'pre-wrap';
 
         if (result === undefined) {
+            // EN: Explicitly displays undefined results.
+            // PT-BR: Exibe explicitamente os resultados undefined.
             resultEntry.textContent = 'undefined';
         } else if (typeof result === 'string') {
             resultEntry.textContent = result;
         } else {
             try {
+                // EN: Formats serializable values as indented JSON, falling back to string conversion when necessary.
+                // PT-BR: Formata valores serializáveis como JSON indentado, recorrendo à conversão para texto quando necessário.
                 resultEntry.textContent = JSON.stringify(result, null, 2)
                     ?? String(result);
             } catch {
+                // EN: Handles values that cannot be serialized as JSON.
+                // PT-BR: Trata valores que não podem ser serializados como JSON.
                 resultEntry.textContent = String(result);
             }
         }
@@ -471,9 +514,13 @@
             } else if(typeof input === "string") {
                 result = eval(input);
             } else {
+                // EN: Rejects inputs that are neither functions nor strings.
+                // PT-BR: Rejeita entradas que não sejam funções nem textos.
                 throw new TypeError("Entrada inválida para execução");
             }
 
+            // EN: Returns the execution result using a consistent response structure.
+            // PT-BR: Retorna o resultado da execução utilizando uma estrutura de resposta consistente.
             return {
                 success: true,
                 result: result
@@ -487,6 +534,8 @@
 
             appendLog(error.stack ?? "Sem stack trace");
 
+            // EN: Returns the captured error so the caller can handle its display.
+            // PT-BR: Retorna o erro capturado para que a função chamadora possa tratar sua exibição.
             return {
                 success: false,
                 error: error

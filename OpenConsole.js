@@ -28,6 +28,7 @@
         openConsolePanel.classList.add('closed');
 
         openConsolePanel.innerHTML = `
+            <div id="open-console-resize-handle" aria-hidden="true"></div>
             <button id="toggle-open-console">▼ Console</button>
             <div class="log-container"></div>
         `;
@@ -70,6 +71,7 @@
                 background: #333;
                 color: white;
                 border: none;
+                position: relative;
                 cursor: pointer;
                 text-align: left;
                 padding-left: 15px;
@@ -84,6 +86,18 @@
 
             .log-container p {
                 margin: 4px 0;
+            }
+
+            #open-console-resize-handle {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 6px;
+                cursor: ns-resize;
+                touch-action: none;
+                user-select: none;
+                z-index: 2;    
             }
 
             .log-error {
@@ -138,6 +152,79 @@
                 : "▲ Console";
         });
     };
+
+    /**
+     * EN:
+     * Configures the resize functionality for the OpenConsole panel,
+     * allowing users to adjust its height through pointer interactions.
+     *
+     * PT-BR:
+     * Configura a funcionalidade de redimensionamento do painel OpenConsole,
+     * permitindo que os usuários ajustem sua altura por meio de interações
+     * com o ponteiro.
+     */
+    function setupResize() {
+        const resizeHandle = document.getElementById('open-console-resize-handle');
+        let isResizing = false;
+        let startY = 0;
+        let startHeight = 0;
+        const minHeight = 120;
+
+        resizeHandle.addEventListener('pointerdown', (event) => {
+            // EN: Prevents resizing while the panel is closed.
+            // PT-BR: Impede o redimensionamento enquanto o painel estiver fechado.
+            if(openConsolePanel.classList.contains('closed')) {
+                return;
+            }
+
+            // EN: Ignores mouse interactions initiated with buttons other than the primary button.
+            // PT-BR: Ignora interações do mouse iniciadas com botões diferentes do botão principal.
+            if(event.pointerType == 'mouse' && event.button !== 0) {
+                return;
+            }
+
+            isResizing = true;
+
+            // EN: Stores the initial pointer position and panel height to calculate subsequent height changes.
+            // PT-BR: Armazena a posição inicial do ponteiro e a altura do painel para calcular as alterações subsequentes.
+            startY = event.clientY;
+            startHeight = openConsolePanel.offsetHeight;
+
+            // EN: Keeps pointer events associated with the resize handle throughout the interaction.
+            // PT-BR: Mantém os eventos do ponteiro associados ao elemento de redimensionamento durante toda a interação.
+            resizeHandle.setPointerCapture(event.pointerId);
+
+            event.preventDefault();
+        });
+
+        resizeHandle.addEventListener('pointermove', (event) => {
+            // EN: Ignores pointer movements when resizing is inactive.
+            // PT-BR: Ignora os movimentos do ponteiro quando o redimensionamento não está ativo.
+            if(!isResizing) {
+                return;
+            }
+            
+            const deltaY = event.clientY - startY;
+            const newHeight = startHeight - deltaY;
+            const maxHeight = window.innerHeight;
+            // EN: Restricts the panel height to the defined minimum and the available viewport height.
+            // PT-BR: Limita a altura do painel ao mínimo definido e à altura disponível da área visível da página.
+            const bounderHeight = Math.min(Math.max(newHeight, minHeight), maxHeight);
+
+            openConsolePanel.style.height = `${bounderHeight}px`;
+        });
+
+        function stopResizing() {
+            // EN: Ends the resizing interaction.
+            // PT-BR: Encerra a interação de redimensionamento.
+            isResizing = false;
+        }
+
+        // EN: Stops resizing when the pointer is released or the interaction is canceled.
+        // PT-BR: Interrompe o redimensionamento quando o ponteiro é solto ou a interação é cancelada.
+        resizeHandle.addEventListener('pointerup', stopResizing);
+        resizeHandle.addEventListener('pointercancel', stopResizing);
+    }
 
     /**
      * EN:
@@ -294,6 +381,7 @@
         createPanel();
         injectStyles();
         bindPanelEvents();
+        setupResize();
         exposeAPI();
         interceptConsoleLogs();
         captureRuntimeErrors();

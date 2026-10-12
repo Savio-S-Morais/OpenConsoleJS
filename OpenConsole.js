@@ -214,6 +214,13 @@
                 return;
             }
 
+            if(command === 'clear' || command === 'clearLogs()' || command === 'clearLogs') {
+                clearLogs();
+                commandInput.value = '';
+                commandInput.focus();
+                return
+            }
+
             appendCommand(command);
 
             const execution = evaluate(command);

@@ -1,13 +1,13 @@
 # OpenConsoleJS
 
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-v0.2.0-blue.svg)
 ![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-orange)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
 
 > Um console de depuração em JavaScript para ambientes onde as DevTools do navegador não estão disponíveis.
 
-O **OpenConsoleJS** é uma biblioteca escrita em **JavaScript puro (Vanilla JS)** que adiciona um painel de console diretamente à página, permitindo visualizar mensagens, erros de execução e testar pequenos trechos de código sem depender das DevTools do navegador.
+O **OpenConsoleJS** é uma biblioteca escrita em **JavaScript puro (Vanilla JS)** que adiciona um painel de console diretamente à página, permitindo visualizar mensagens, acompanhar erros de execução, executar comandos JavaScript e ajustar a altura do painel sem depender das DevTools do navegador.
 
 O projeto nasceu com foco educacional, mas pode ser utilizado em qualquer ambiente onde o acesso às ferramentas nativas de desenvolvimento seja limitado.
 ## ⭐ Destaques
@@ -95,12 +95,22 @@ A versão atual implementa os seguintes recursos:
 
 - Painel de console embutido na página
 - Interface recolhível
-- Captura de chamadas para `console.log()`
+- Redimensionamento vertical do painel
+- Campo interativo para execução de comandos JavaScript
+- Captura de chamadas para `console.log()`, `console.info()`, `console.warn()` e `console.error()`
 - Captura de erros não tratados (`window.onerror`)
 - Captura de Promises rejeitadas (`unhandledrejection`)
 - Execução de código através da API `OpenConsole.evaluate()`
+- Exibição de resultados e erros durante a execução de comandos
 - Limpeza do histórico de mensagens
 - API pública simples
+
+
+### Redimensionando o painel
+
+A altura do painel pode ser ajustada verticalmente por meio da alça de redimensionamento localizada na borda superior.
+
+Isso permite aumentar a área de visualização dos logs ou reduzi-la conforme a necessidade durante a depuração.
 
 ---
 
@@ -110,9 +120,6 @@ O projeto ainda está em estágio inicial.
 
 Atualmente **não possui**:
 
-- `console.warn()`
-- `console.error()`
-- `console.info()`
 - inspeção de objetos
 - filtros
 - pesquisa
@@ -123,7 +130,6 @@ Atualmente **não possui**:
 - medição de performance
 - sistema de plugins
 - temas
-- console interativo
 
 Esses recursos fazem parte do roadmap do projeto.
 
@@ -176,6 +182,36 @@ Olá mundo!
 
 Também é possível executar código através da API pública.
 
+### Utilizando o console interativo
+
+O OpenConsoleJS disponibiliza um campo de entrada no painel para executar comandos JavaScript diretamente na página.
+
+Por exemplo, digite:
+
+```javascript
+2 + 2
+```
+
+O painel deverá exibir o resultado:
+
+```text
+4
+```
+
+Também é possível consultar informações da página:
+
+```javascript
+document.title
+```
+
+Ou executar comandos que geram mensagens:
+
+```javascript
+console.log("Olá, OpenConsoleJS!");
+```
+
+Erros ocorridos durante a execução são exibidos no painel para auxiliar na depuração.
+
 ### Utilizando uma função
 
 ```javascript
@@ -218,13 +254,12 @@ OpenConsole.appendLog("Mensagem personalizada");
 
 ## 📚 API pública
 
-Atualmente a biblioteca disponibiliza os seguintes métodos:
-
 | Método | Descrição |
 |---------|-----------|
-| `OpenConsole.evaluate()` | Executa código JavaScript |
-| `OpenConsole.appendLog()` | Adiciona uma mensagem manualmente |
-| `OpenConsole.clearLogs()` | Remove todas as mensagens |
+| `OpenConsole.evaluate(input)` | Executa uma função ou string JavaScript e retorna o resultado em caso de sucesso. Erros capturados são registrados no painel. |
+| `OpenConsole.appendLog(message)` | Adiciona uma mensagem manualmente ao painel. |
+| `OpenConsole.clearLogs()` | Remove todas as mensagens do painel. |
+
 
 ---
 
@@ -308,6 +343,7 @@ Entre as próximas funcionalidades previstas estão:
 - [ ] Temporizadores (`time/timeEnd`)
 - [ ] Contadores (`count`)
 - [x] ~~Console interativo~~
+- [x] ~~Redimensionamento vertical do painel~~
 - [ ] Sistema de plugins
 - [ ] Temas
 - [ ] Responsividade aprimorada
